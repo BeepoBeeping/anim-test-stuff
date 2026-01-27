@@ -790,7 +790,7 @@ MonoBehaviour:
   Orbits:
     Top:
       Radius: 2
-      Height: 5
+      Height: 3
     Center:
       Radius: 3
       Height: 1

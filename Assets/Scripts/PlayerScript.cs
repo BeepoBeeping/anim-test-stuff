@@ -120,6 +120,11 @@ public class PlayerScript : MonoBehaviour
 
     void PlayerJumping()
     {
+        anim.SetBool("isWalk", false);
+        anim.SetBool("isDance", false);
+        anim.SetBool("isIdle", false);
+        anim.SetBool("isJump", true);
+
         // player is jumping, check for hitting the ground
         if (grounded == true)
         {
@@ -189,7 +194,6 @@ public class PlayerScript : MonoBehaviour
         Vector3 vel;
         anim.SetBool("isWalk", true);
         anim.SetBool("isIdle", false);
-        anim.SetBool("isDance", false);
 
         //magnitude = the player's speed
         float magnitude = rb.linearVelocity.magnitude;
@@ -207,9 +211,10 @@ public class PlayerScript : MonoBehaviour
 
         rb.linearVelocity = new Vector3(vel.x, rb.linearVelocity.y, vel.z);
 
-        if (magnitude <= 0.5f)
+        if (magnitude > 0.5f)
         {
-            state = States.Idle;
+            anim.SetBool("isDance", false);
+            state = States.Walk;
         }
     }
 
