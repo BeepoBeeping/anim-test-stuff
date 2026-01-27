@@ -27,6 +27,7 @@ public class PlayerScript : MonoBehaviour
     public float waiting = 3f;
     public bool deathCooldown = true;
 
+
     // Start is called before the first frame update
     void Start()
     {
@@ -98,7 +99,7 @@ public class PlayerScript : MonoBehaviour
         {
             // simulate jump
             state = States.Jump;
-            rb.linearVelocity = new Vector3(0, 10, 0);
+            rb.linearVelocity = new Vector3(0, 6f, 0);
         }
 
         if (Input.GetKey("left") || Input.GetKey(KeyCode.A))
@@ -129,7 +130,9 @@ public class PlayerScript : MonoBehaviour
         if (grounded == true)
         {
             //player has landed on floor
+            anim.SetBool("isJump", false);           
             state = States.Idle;
+            
         }
     }
 
@@ -139,6 +142,7 @@ public class PlayerScript : MonoBehaviour
         anim.SetBool("isWalk", true);
         anim.SetBool("isIdle", false);
         anim.SetBool("isDance", false);
+        anim.SetBool("isJump", false);
 
         //magnitude = the player's speed
         float magnitude = rb.linearVelocity.magnitude;
