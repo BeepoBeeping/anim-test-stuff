@@ -151,7 +151,7 @@ public class PlayerScript : MonoBehaviour
 
         if (Input.GetKey(KeyCode.UpArrow) || Input.GetKey(KeyCode.W))
         {
-            vel = transform.forward * 5f;
+            vel = transform.forward * 3f;
         }
         else
         {
