@@ -15,6 +15,7 @@ public enum States // used by all logic
     Jump,
     Dead,
     Dance,
+    Sprint,
 };
 
 public class PlayerScript : MonoBehaviour
@@ -90,6 +91,11 @@ public class PlayerScript : MonoBehaviour
         if (state == States.Dance)
         {
             PlayerDance();
+        }
+
+        if (state == States.Sprint)
+        {
+            PlayerSprint();
         }
     }
 
@@ -199,6 +205,11 @@ public class PlayerScript : MonoBehaviour
         {
             state = States.Idle;
         }
+
+    }
+
+    void PlayerSprint()
+    {
 
     }
 
