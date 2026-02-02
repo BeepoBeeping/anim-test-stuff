@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.Animations;
 using UnityEngine.InputSystem.Utilities;
 
@@ -26,7 +27,8 @@ public class PlayerScript : MonoBehaviour
 
     public float waiting = 3f;
     public bool deathCooldown = true;
-
+    InputAction moveAction;
+    InputAction jumpAction;
 
     // Start is called before the first frame update
     void Start()
@@ -34,6 +36,8 @@ public class PlayerScript : MonoBehaviour
         state = States.Idle;
         rb = GetComponent<Rigidbody>();
         anim = GetComponent<Animator>();
+        moveAction = InputSystem.actions.FindAction("Move");
+        jumpAction = InputSystem.actions.FindAction("Jump");
     }
 
     // Update is called once per frame
@@ -95,24 +99,24 @@ public class PlayerScript : MonoBehaviour
         deathCooldown = true;
         waiting = 3f;
 
-        if (Input.GetKeyDown(KeyCode.Space))
+        if (jumpAction.IsPressed())
         {
             // simulate jump
             state = States.Jump;
             rb.linearVelocity = new Vector3(0, 6f, 0);
         }
 
-        if (Input.GetKey("left") || Input.GetKey(KeyCode.A))
+        if (moveAction.IsPressed())
         {
             transform.Rotate(0, 0.5f, 0, Space.Self);
 
         }
-        if (Input.GetKey("right") || Input.GetKey(KeyCode.D))
+        if (moveAction.IsPressed())
         {
             transform.Rotate(0, -0.5f, 0, Space.Self);
         }
 
-        if (Input.GetKey("up") || Input.GetKey(KeyCode.W))
+        if (moveAction.IsPressed())
         {
             state = States.Walk;
         }
@@ -121,6 +125,7 @@ public class PlayerScript : MonoBehaviour
 
     void PlayerJumping()
     {
+        Vector3 vel;
         anim.SetBool("isWalk", false);
         anim.SetBool("isDance", false);
         anim.SetBool("isIdle", false);
@@ -130,9 +135,29 @@ public class PlayerScript : MonoBehaviour
         if (grounded == true)
         {
             //player has landed on floor
-            anim.SetBool("isJump", false);           
+            anim.SetBool("isJump", false);
             state = States.Idle;
-            
+
+        }
+
+        float magnitude = rb.linearVelocity.magnitude;
+
+        if (moveAction.IsPressed())
+        {
+            vel = transform.forward * 3f;
+        }
+        else
+        {
+            vel = transform.forward * 0.5f;
+        }
+
+
+
+        rb.linearVelocity = new Vector3(vel.x, rb.linearVelocity.y, vel.z);
+
+        if (magnitude <= 0.5f)
+        {
+            state = States.Idle;
         }
     }
 
@@ -149,13 +174,19 @@ public class PlayerScript : MonoBehaviour
 
         //move forward and preserve original y velocity
 
-        if (Input.GetKey(KeyCode.UpArrow) || Input.GetKey(KeyCode.W))
+        if (moveAction.IsPressed())
         {
             vel = transform.forward * 3f;
         }
         else
         {
             vel = transform.forward * 0.5f;
+        }
+
+        if (jumpAction.IsPressed())
+        {
+            state = States.Jump;
+            rb.linearVelocity = new Vector3(0, 6f, 0);
         }
 
         rb.linearVelocity = new Vector3(vel.x, rb.linearVelocity.y, vel.z);
@@ -204,9 +235,9 @@ public class PlayerScript : MonoBehaviour
 
         //move forward and preserve original y velocity
 
-        if (Input.GetKey(KeyCode.UpArrow) || Input.GetKey(KeyCode.W))
+        if (moveAction.IsPressed())
         {
-            vel = transform.forward * 5f;
+            vel = transform.forward * 3f;
         }
         else
         {
@@ -222,7 +253,7 @@ public class PlayerScript : MonoBehaviour
         }
     }
 
-   
+
 
 
     void OnCollisionEnter(Collision col)
