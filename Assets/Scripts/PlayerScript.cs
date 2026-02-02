@@ -29,6 +29,8 @@ public class PlayerScript : MonoBehaviour
     public bool deathCooldown = true;
     InputAction moveAction;
     InputAction jumpAction;
+    InputAction sprintAction;
+    InputAction danceAction;
 
     // Start is called before the first frame update
     void Start()
@@ -38,6 +40,8 @@ public class PlayerScript : MonoBehaviour
         anim = GetComponent<Animator>();
         moveAction = InputSystem.actions.FindAction("Move");
         jumpAction = InputSystem.actions.FindAction("Jump");
+        sprintAction = InputSystem.actions.FindAction("Sprint");
+        danceAction = InputSystem.actions.FindAction("Dance");
     }
 
     // Update is called once per frame
@@ -45,7 +49,7 @@ public class PlayerScript : MonoBehaviour
     {
         DoLogic();
 
-        if (Input.GetKey(KeyCode.R))
+        if (danceAction.IsPressed())
         {
             anim.SetBool("isIdle", false);
             anim.SetBool("isWalk", false);
