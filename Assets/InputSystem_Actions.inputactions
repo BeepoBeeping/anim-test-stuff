@@ -88,18 +88,9 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "SprintStart",
+                    "name": "Run",
                     "type": "Button",
                     "id": "e0b05358-9ec0-4995-b710-298795df00f0",
-                    "expectedControlType": "",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
-                },
-                {
-                    "name": "SprintFinish",
-                    "type": "Button",
-                    "id": "9930d2fb-2989-4eb8-a9db-29a6b9024151",
                     "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
@@ -488,18 +479,18 @@
                     "interactions": "",
                     "processors": "",
                     "groups": ";Keyboard&Mouse",
-                    "action": "SprintStart",
+                    "action": "Run",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
                 {
                     "name": "",
-                    "id": "cf3c6248-1003-4d1b-b9ec-669663a3627a",
-                    "path": "<Keyboard>/shift",
-                    "interactions": "Press(behavior=1)",
+                    "id": "d36e5855-a862-4656-9c47-17b6d153dfbe",
+                    "path": "<Gamepad>/leftStickPress",
+                    "interactions": "",
                     "processors": "",
-                    "groups": ";Keyboard&Mouse",
-                    "action": "SprintFinish",
+                    "groups": ";Gamepad",
+                    "action": "Run",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

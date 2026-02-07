@@ -16,6 +16,7 @@ public enum States // used by all logic
     Dead,
     Dance,
     Run,
+    RunJump,
 };
 
 public class PlayerScript : MonoBehaviour
@@ -28,6 +29,7 @@ public class PlayerScript : MonoBehaviour
 
     public float waiting = 3f;
     public bool deathCooldown = true;
+    public bool isRunning;
     InputAction moveAction;
     InputAction jumpAction;
     InputAction runAction;
@@ -113,9 +115,10 @@ public class PlayerScript : MonoBehaviour
 
         if (jumpAction.IsPressed())
         {
+            anim.SetBool("isIdle", false);
             // simulate jump
             state = States.Jump;
-            rb.linearVelocity = new Vector3(0, 6f, 0);
+            rb.linearVelocity = new Vector3(0, 4f, 0);
         }
 
         if (moveAction.IsPressed())
@@ -199,8 +202,9 @@ public class PlayerScript : MonoBehaviour
 
         if (jumpAction.IsPressed())
         {
+            anim.SetBool("isWalk", false);
             state = States.Jump;
-            rb.linearVelocity = new Vector3(0, 6f, 0);
+            rb.linearVelocity = new Vector3(0, 4f, 0);
         }
 
         rb.linearVelocity = new Vector3(vel.x, rb.linearVelocity.y, vel.z);
@@ -216,34 +220,51 @@ public class PlayerScript : MonoBehaviour
     {
         if (runAction.IsPressed())
         {
+            bool isRunning = true;
 
-            state = States.Run;
-
-            Vector3 vel;
-            anim.SetBool("isWalk", false);
-            anim.SetBool("isRun", true);
-            anim.SetBool("isIdle", false);
-            anim.SetBool("isDance", false);
-            anim.SetBool("isJump", false);
-
-            //magnitude = the player's speed
-            float magnitude = rb.linearVelocity.magnitude;
-
-
-            vel = transform.forward * 6f;
-            
-
-            if (jumpAction.IsPressed())
+            if (isRunning == true && moveAction.IsPressed())
             {
-                state = States.Jump;
-                rb.linearVelocity = new Vector3(0, 7.5f, 0);
+                print("Running");
+                Vector3 vel;
+
+                vel = transform.forward * 6f;
+
+
+                state = States.Run;
+                
+                anim.SetBool("isWalk", false);
+                anim.SetBool("isRun", true);
+                anim.SetBool("isIdle", false);
+                anim.SetBool("isDance", false);
+                anim.SetBool("isJump", false);
+
+                //magnitude = the player's speed
+                float magnitude = rb.linearVelocity.magnitude;
+
+                //move forward and preserve original y velocity
+
+                
+                
+                
+               
+
+                if (isRunning == true && jumpAction.IsPressed())
+                {
+                    anim.SetBool("isRun", false);
+                    state = States.RunJump;
+                    rb.linearVelocity = new Vector3(0, 4f, 0);
+                }
+
+                rb.linearVelocity = new Vector3(vel.x, rb.linearVelocity.y, vel.z);
+
+                if (magnitude <= 0.5f)
+                {
+                    state = States.Idle;
+                }
             }
-
-            rb.linearVelocity = new Vector3(vel.x, rb.linearVelocity.y, vel.z);
-
-            if (magnitude <= 0.5f)
+            else
             {
-                state = States.Idle;
+                isRunning = false;   
             }
         }
     }
@@ -293,7 +314,7 @@ public class PlayerScript : MonoBehaviour
         }
         else
         {
-            vel = transform.forward * 0.5f;
+            vel = transform.forward * 0f;
         }
 
         rb.linearVelocity = new Vector3(vel.x, rb.linearVelocity.y, vel.z);
