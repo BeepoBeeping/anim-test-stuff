@@ -5,6 +5,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.Animations;
 using UnityEngine.InputSystem.Utilities;
+using UnityEngine.SceneManagement;
 
 
 public enum States // used by all logic
@@ -31,6 +32,7 @@ public class PlayerScript : MonoBehaviour
     InputAction moveAction;
     InputAction jumpAction;
     InputAction danceAction;
+    InputAction menuAction;
 
     // Start is called before the first frame update
     void Start()
@@ -41,6 +43,7 @@ public class PlayerScript : MonoBehaviour
         moveAction = InputSystem.actions.FindAction("Move");
         jumpAction = InputSystem.actions.FindAction("Jump");
         danceAction = InputSystem.actions.FindAction("Dance");
+        menuAction = InputSystem.actions.FindAction("Menu");
     }
 
     // Update is called once per frame
@@ -63,6 +66,11 @@ public class PlayerScript : MonoBehaviour
             anim.SetBool("isDance", false);
             anim.SetBool("isJump", false);
             rb.linearVelocity = new Vector3(0, -10f, 0);
+        }
+
+        if (menuAction.IsPressed())
+        {
+            SceneManager.LoadScene("Menu");
         }
     }
 
