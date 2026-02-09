@@ -15,8 +15,6 @@ public enum States // used by all logic
     Jump,
     Dead,
     Dance,
-    Run,
-    RunJump,
 };
 
 public class PlayerScript : MonoBehaviour
@@ -29,10 +27,9 @@ public class PlayerScript : MonoBehaviour
 
     public float waiting = 3f;
     public bool deathCooldown = true;
-    public bool isRunning;
+    public bool falling;
     InputAction moveAction;
     InputAction jumpAction;
-    InputAction runAction;
     InputAction danceAction;
 
     // Start is called before the first frame update
@@ -43,7 +40,6 @@ public class PlayerScript : MonoBehaviour
         anim = GetComponent<Animator>();
         moveAction = InputSystem.actions.FindAction("Move");
         jumpAction = InputSystem.actions.FindAction("Jump");
-        runAction = InputSystem.actions.FindAction("Run");
         danceAction = InputSystem.actions.FindAction("Dance");
     }
 
@@ -55,10 +51,18 @@ public class PlayerScript : MonoBehaviour
         if (danceAction.IsPressed())
         {
             anim.SetBool("isIdle", false);
-            anim.SetBool("isRun", false);
             anim.SetBool("isWalk", false);
             anim.SetBool("isDance", true);
             state = States.Dance;
+        }
+
+        if (falling == true)
+        {
+            anim.SetBool("isIdle", false);
+            anim.SetBool("isWalk", false);
+            anim.SetBool("isDance", false);
+            anim.SetBool("isJump", false);
+            rb.linearVelocity = new Vector3(0, -10f, 0);
         }
     }
 
@@ -68,7 +72,7 @@ public class PlayerScript : MonoBehaviour
 
     }
 
-
+    
     void DoLogic()
     {
         if (state == States.Idle)
@@ -95,18 +99,13 @@ public class PlayerScript : MonoBehaviour
         {
             PlayerDance();
         }
-
-        if (state == States.Run)
-        {
-            PlayerRun();
-        }
     }
 
 
+    #region PlayerIdle
     void PlayerIdle()
     {
         anim.SetBool("isWalk", false);
-        anim.SetBool("isRun", false);
         anim.SetBool("isDead", false);
         anim.SetBool("isIdle", true);
 
@@ -118,7 +117,7 @@ public class PlayerScript : MonoBehaviour
             anim.SetBool("isIdle", false);
             // simulate jump
             state = States.Jump;
-            rb.linearVelocity = new Vector3(0, 4f, 0);
+            rb.linearVelocity = new Vector3(0, 4.5f, 0);
         }
 
         if (moveAction.IsPressed())
@@ -134,15 +133,16 @@ public class PlayerScript : MonoBehaviour
         if (moveAction.IsPressed())
         {
             state = States.Walk;
-        }
-
+        }     
     }
 
+    #endregion
+
+    #region PlayerJump
     void PlayerJumping()
     {
         Vector3 vel;
         anim.SetBool("isWalk", false);
-        anim.SetBool("isRun", false);
         anim.SetBool("isDance", false);
         anim.SetBool("isIdle", false);
         anim.SetBool("isJump", true);
@@ -160,12 +160,14 @@ public class PlayerScript : MonoBehaviour
 
         if (moveAction.IsPressed())
         {
-            vel = transform.forward * 3f;
+            vel = transform.forward * 3.65f;
         }
         else
         {
             vel = transform.forward * 0.5f;
         }
+
+       
 
 
 
@@ -177,11 +179,13 @@ public class PlayerScript : MonoBehaviour
         }
     }
 
+    #endregion
+
+    #region PlayerWalk
     void PlayerWalk()
     {
         Vector3 vel;
         anim.SetBool("isWalk", true);
-        anim.SetBool("isRun", false);
         anim.SetBool("isIdle", false);
         anim.SetBool("isDance", false);
         anim.SetBool("isJump", false);
@@ -193,7 +197,7 @@ public class PlayerScript : MonoBehaviour
 
         if (moveAction.IsPressed())
         {
-            vel = transform.forward * 3f;
+            vel = transform.forward * 3.65f;
         }
         else
         {
@@ -204,7 +208,7 @@ public class PlayerScript : MonoBehaviour
         {
             anim.SetBool("isWalk", false);
             state = States.Jump;
-            rb.linearVelocity = new Vector3(0, 4f, 0);
+            rb.linearVelocity = new Vector3(0, 4.5f, 0);
         }
 
         rb.linearVelocity = new Vector3(vel.x, rb.linearVelocity.y, vel.z);
@@ -216,66 +220,16 @@ public class PlayerScript : MonoBehaviour
 
     }
 
-    void PlayerRun()
-    {
-        if (runAction.IsPressed())
-        {
-            bool isRunning = true;
+    #endregion
 
-            if (isRunning == true && moveAction.IsPressed())
-            {
-                print("Running");
-                Vector3 vel;
-
-                vel = transform.forward * 6f;
-
-
-                state = States.Run;
-                
-                anim.SetBool("isWalk", false);
-                anim.SetBool("isRun", true);
-                anim.SetBool("isIdle", false);
-                anim.SetBool("isDance", false);
-                anim.SetBool("isJump", false);
-
-                //magnitude = the player's speed
-                float magnitude = rb.linearVelocity.magnitude;
-
-                //move forward and preserve original y velocity
-
-                
-                
-                
-               
-
-                if (isRunning == true && jumpAction.IsPressed())
-                {
-                    anim.SetBool("isRun", false);
-                    state = States.RunJump;
-                    rb.linearVelocity = new Vector3(0, 4f, 0);
-                }
-
-                rb.linearVelocity = new Vector3(vel.x, rb.linearVelocity.y, vel.z);
-
-                if (magnitude <= 0.5f)
-                {
-                    state = States.Idle;
-                }
-            }
-            else
-            {
-                isRunning = false;   
-            }
-        }
-    }
-
+    #region PlayerDead
     void PlayerDead()
     {
         if (deathCooldown == true)
         {
+            anim.SetBool("isFalling", false);
             anim.SetBool("isIdle", false);
             anim.SetBool("isWalk", false);
-            anim.SetBool("isRun", false);
             anim.SetBool("isDead", true);
             anim.SetBool("isDance", false);
         }
@@ -287,8 +241,10 @@ public class PlayerScript : MonoBehaviour
 
         if (waiting <= 0)
         {
+            anim.SetBool("isDead", false);
+            anim.SetBool("isIdle", true);
             state = States.Idle;
-            transform.position = new Vector3(0, 0, 0);
+            transform.position = new Vector3(8f, 0.5f, 4f);
             rb.angularVelocity = Vector3.zero;
             print("reset transform");
         }
@@ -296,11 +252,13 @@ public class PlayerScript : MonoBehaviour
 
     }
 
+    #endregion
+
+    #region PlayerDance
     void PlayerDance()
     {
         Vector3 vel;
         anim.SetBool("isWalk", true);
-        anim.SetBool("isRun", false);
         anim.SetBool("isIdle", false);
 
         //magnitude = the player's speed
@@ -310,7 +268,7 @@ public class PlayerScript : MonoBehaviour
 
         if (moveAction.IsPressed())
         {
-            vel = transform.forward * 3f;
+            vel = transform.forward * 3.65f;
         }
         else
         {
@@ -321,13 +279,14 @@ public class PlayerScript : MonoBehaviour
 
         if (magnitude > 0.5f)
         {
-            anim.SetBool("isDance", false);
             state = States.Walk;
         }
+        
     }
 
+    #endregion
 
-
+    #region Collision
 
     void OnCollisionEnter(Collision col)
     {
@@ -341,8 +300,27 @@ public class PlayerScript : MonoBehaviour
         {
             state = States.Dead;
         }
+
+        if (col.gameObject.tag == "Death")
+        {
+            falling = false;
+            anim.SetBool("isFalling", false);
+            anim.SetBool("isDead", true);
+            state = States.Dead;
+        }
+
     }
 
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.gameObject.tag == "FallTrig")
+        {
+            falling = true;
+            anim.SetBool("isFalling", true);
+        }
+    }
+
+    #endregion
 
     //Output debug info to canvas
     private void OnGUI()

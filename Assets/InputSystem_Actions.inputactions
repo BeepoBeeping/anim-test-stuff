@@ -37,7 +37,7 @@
                     "name": "Interact",
                     "type": "Button",
                     "id": "852140f2-7766-474d-8707-702459ba45f3",
-                    "expectedControlType": "Button",
+                    "expectedControlType": "",
                     "processors": "",
                     "interactions": "Hold",
                     "initialStateCheck": false
@@ -82,15 +82,6 @@
                     "name": "Dance",
                     "type": "Button",
                     "id": "5cf2a5ea-7c76-4adb-8296-cd3d83984fda",
-                    "expectedControlType": "",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
-                },
-                {
-                    "name": "Run",
-                    "type": "Button",
-                    "id": "e0b05358-9ec0-4995-b710-298795df00f0",
                     "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
@@ -456,7 +447,7 @@
                     "path": "<Gamepad>/dpad/down",
                     "interactions": "",
                     "processors": "",
-                    "groups": "",
+                    "groups": ";Gamepad",
                     "action": "Dance",
                     "isComposite": false,
                     "isPartOfComposite": false
@@ -467,30 +458,8 @@
                     "path": "<Keyboard>/r",
                     "interactions": "",
                     "processors": "",
-                    "groups": "",
-                    "action": "Dance",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "28cd1e96-5f6d-44a9-8c44-615022b4705b",
-                    "path": "<Keyboard>/shift",
-                    "interactions": "",
-                    "processors": "",
                     "groups": ";Keyboard&Mouse",
-                    "action": "Run",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "d36e5855-a862-4656-9c47-17b6d153dfbe",
-                    "path": "<Gamepad>/leftStickPress",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": ";Gamepad",
-                    "action": "Run",
+                    "action": "Dance",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
