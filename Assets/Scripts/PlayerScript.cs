@@ -34,6 +34,8 @@ public class PlayerScript : MonoBehaviour
     InputAction danceAction;
     InputAction menuAction;
 
+    #region Start
+
     // Start is called before the first frame update
     void Start()
     {
@@ -46,21 +48,17 @@ public class PlayerScript : MonoBehaviour
         menuAction = InputSystem.actions.FindAction("Menu");
     }
 
+    #endregion
+
+    #region Update
     // Update is called once per frame
     void Update()
     {
         DoLogic();
 
-        if (danceAction.IsPressed())
-        {
-            anim.SetBool("isIdle", false);
-            anim.SetBool("isWalk", false);
-            anim.SetBool("isDance", true);
-            state = States.Dance;
-        }
-
         if (falling == true)
         {
+            anim.SetBool("isFalling", true);
             anim.SetBool("isIdle", false);
             anim.SetBool("isWalk", false);
             anim.SetBool("isDance", false);
@@ -68,19 +66,25 @@ public class PlayerScript : MonoBehaviour
             rb.linearVelocity = new Vector3(0, -10f, 0);
         }
 
+
         if (menuAction.IsPressed())
         {
             SceneManager.LoadScene("Menu");
         }
     }
 
+    #endregion
+
+    #region Late Update
     private void LateUpdate()
     {
         grounded = false;
-
     }
 
-    
+    #endregion
+
+    #region Logic
+
     void DoLogic()
     {
         if (state == States.Idle)
@@ -109,8 +113,9 @@ public class PlayerScript : MonoBehaviour
         }
     }
 
+    #endregion
 
-    #region PlayerIdle
+    #region Player Idle
     void PlayerIdle()
     {
         anim.SetBool("isWalk", false);
@@ -142,11 +147,16 @@ public class PlayerScript : MonoBehaviour
         {
             state = States.Walk;
         }     
+
+        if (danceAction.IsPressed())
+        {
+            state = States.Dance;
+        }
     }
 
     #endregion
 
-    #region PlayerJump
+    #region Player Jump
     void PlayerJumping()
     {
         Vector3 vel;
@@ -189,7 +199,7 @@ public class PlayerScript : MonoBehaviour
 
     #endregion
 
-    #region PlayerWalk
+    #region Player Walk
     void PlayerWalk()
     {
         Vector3 vel;
@@ -219,6 +229,11 @@ public class PlayerScript : MonoBehaviour
             rb.linearVelocity = new Vector3(0, 4.5f, 0);
         }
 
+        if (danceAction.IsPressed())
+        {
+            state = States.Dance;
+        }
+
         rb.linearVelocity = new Vector3(vel.x, rb.linearVelocity.y, vel.z);
 
         if (magnitude <= 0.5f)
@@ -230,7 +245,7 @@ public class PlayerScript : MonoBehaviour
 
     #endregion
 
-    #region PlayerDead
+    #region Player Dead
     void PlayerDead()
     {
         if (deathCooldown == true)
@@ -262,11 +277,12 @@ public class PlayerScript : MonoBehaviour
 
     #endregion
 
-    #region PlayerDance
+    #region Player Dance
     void PlayerDance()
     {
         Vector3 vel;
-        anim.SetBool("isWalk", true);
+        anim.SetBool("isDance", true);
+        anim.SetBool("isWalk", false);
         anim.SetBool("isIdle", false);
 
         //magnitude = the player's speed
@@ -313,6 +329,7 @@ public class PlayerScript : MonoBehaviour
         {
             falling = false;
             anim.SetBool("isFalling", false);
+            anim.SetBool("isDance", false);
             anim.SetBool("isDead", true);
             state = States.Dead;
         }
@@ -325,11 +342,13 @@ public class PlayerScript : MonoBehaviour
         {
             falling = true;
             anim.SetBool("isFalling", true);
+            anim.SetBool("isDance", false);
         }
     }
 
     #endregion
 
+    #region GUI Test
     //Output debug info to canvas
     private void OnGUI()
     {
@@ -346,4 +365,6 @@ public class PlayerScript : MonoBehaviour
         GUILayout.Label($"<size=16>{text}</size>");
         GUILayout.EndArea();
     }
+
+    #endregion
 }
