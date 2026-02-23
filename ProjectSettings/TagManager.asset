@@ -8,6 +8,8 @@ TagManager:
   - sky
   - FallTrig
   - Death
+  - fadeIn
+  - fadeOut
   layers:
   - Default
   - TransparentFX

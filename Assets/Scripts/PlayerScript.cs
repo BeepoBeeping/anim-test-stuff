@@ -25,6 +25,8 @@ public class PlayerScript : MonoBehaviour
     public Animator anim;
     Rigidbody rb;
     public bool grounded;
+    public FadeInScript fadeIn;
+    public FadeOutScript fadeOut;
 
     public float waiting = 3f;
     public bool deathCooldown = true;
@@ -56,6 +58,7 @@ public class PlayerScript : MonoBehaviour
     {
         DoLogic();
 
+ 
         if (falling == true)
         {
             anim.SetBool("isFalling", true);
@@ -264,6 +267,7 @@ public class PlayerScript : MonoBehaviour
 
         if (waiting <= 0)
         {
+            anim.SetBool("fadeIn", true);
             anim.SetBool("isDead", false);
             anim.SetBool("isIdle", true);
             state = States.Idle;
@@ -292,6 +296,8 @@ public class PlayerScript : MonoBehaviour
 
         if (moveAction.IsPressed())
         {
+            anim.SetBool("isDance", false);
+            anim.SetBool("isWalk", true);
             vel = transform.forward * 3.65f;
         }
         else
@@ -331,6 +337,7 @@ public class PlayerScript : MonoBehaviour
             anim.SetBool("isFalling", false);
             anim.SetBool("isDance", false);
             anim.SetBool("isDead", true);
+            anim.SetBool("fadeOut", true);
             state = States.Dead;
         }
 
